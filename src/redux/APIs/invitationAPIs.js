@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { invitationRoutes } from "./APIs";
+import { invitationRoutes } from "../paths";
 
 export const getByUserId = createAsyncThunk("invitations/getByUserId", async ({ userId }) => {
   try {

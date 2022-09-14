@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { userRoutes } from "./APIs";
+import { userRoutes } from "../paths";
 
 export const getManyById = createAsyncThunk("users/getManyById", async ({ userIdList }) => {
   try {

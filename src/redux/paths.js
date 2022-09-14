@@ -1,6 +1,6 @@
 export const host = "http://localhost:5000";
 
-// Users
+//@ Users
 const users = `${host}/users`;
 export const userRoutes = {
   getManyById: () => users,
@@ -14,7 +14,7 @@ export const userRoutes = {
   deleteById: (userId) => `${users}/${userId}`,
 };
 
-// Rooms
+//@ Rooms
 const rooms = `${host}/rooms`;
 export const roomRoutes = {
   getAll: () => rooms,
@@ -29,14 +29,14 @@ export const roomRoutes = {
   deleteById: (roomId) => `${rooms}/${roomId}`,
 };
 
-// Messages
+//@ Messages
 const messages = `${host}/messages`;
 export const messageRoutes = {
   getByRoomId: (roomId) => `${messages}/${roomId}`,
   create: () => `${messages}/create`,
 };
 
-// Invitations
+//@ Invitations
 const invitations = `${host}/invitations`;
 export const invitationRoutes = {
   getByUserId: (userId) => `${invitations}/${userId}`,

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { signIn, signUp } from "./APIs/userAPIs";
+import { signIn, signUp } from "../APIs/userAPIs";
 
 const enterSlice = createSlice({
   name: "enter",

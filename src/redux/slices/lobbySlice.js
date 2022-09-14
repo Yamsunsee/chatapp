@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getByUserId } from "./APIs/invitationAPIs";
-import { getAll } from "./APIs/roomAPIs";
+import { getByUserId } from "../APIs/invitationAPIs";
+import { getAll } from "../APIs/roomAPIs";
 
 const lobbySlice = createSlice({
   name: "lobby",

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { messageRoutes } from "./APIs";
+import { messageRoutes } from "../paths";
 
 export const getByRoomId = createAsyncThunk("messages/getByRoomId", async ({ roomId }) => {
   try {
