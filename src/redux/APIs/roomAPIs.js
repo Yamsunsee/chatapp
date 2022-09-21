@@ -20,15 +20,6 @@ export const getById = createAsyncThunk("rooms/getById", async ({ roomId }) => {
   }
 });
 
-export const getJoinedMembers = createAsyncThunk("rooms/getJoinedMembers", async ({ roomId }) => {
-  try {
-    const { data } = await axios.get(roomRoutes.getJoinedMembers(roomId));
-    return data;
-  } catch (error) {
-    return error.response.data;
-  }
-});
-
 export const getPendingMembers = createAsyncThunk("rooms/getPendingMembers", async ({ roomId }) => {
   try {
     const { data } = await axios.get(roomRoutes.getPendingMembers(roomId));

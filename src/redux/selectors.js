@@ -10,6 +10,7 @@ export const enterStatusSelector = (state) => state.enter.isLoading;
 export const lobbyStatusSelector = (state) => state.lobby.isLoading;
 export const filtersSelector = (state) => state.lobby.filters;
 export const userSelector = (state) => state.lobby.user;
+export const onlineMembersSelector = (state) => state.lobby.onlineMembers;
 export const invitationsSelector = (state) => state.lobby.invitations;
 export const roomsSelector = (state) => state.lobby.rooms;
 export const remainingRoomsSelector = createSelector(roomsSelector, filtersSelector, (rooms, filters) => {
@@ -28,6 +29,15 @@ export const remainingRoomsSelector = createSelector(roomsSelector, filtersSelec
 
 //@ Chatroom route
 export const chatroomStatusSelector = (state) => state.chatroom.isLoading;
-export const requestsSelector = (state) => state.chatroom.requests;
-export const membersSelector = (state) => state.chatroom.members;
+export const joinedMembersSelector = (state) => state.chatroom.room.joinedMembers;
 export const messagesSeletor = (state) => state.chatroom.messages;
+export const roomSelector = (state) => state.chatroom.room;
+export const idleMembersSelector = createSelector(
+  onlineMembersSelector,
+  joinedMembersSelector,
+  (onlineMembers, joinedMembers) => {
+    return onlineMembers.filter(
+      (onlineMember) => !joinedMembers.some((joinedMember) => onlineMember._id === joinedMember._id)
+    );
+  }
+);

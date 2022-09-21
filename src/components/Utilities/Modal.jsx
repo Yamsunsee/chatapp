@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 
-const Modal = ({ toggle, type, cancle, isCancle }) => {
+const Modal = ({ toggle, type }) => {
   const [text, setText] = useState("");
   const [color, setColor] = useState("blue");
 
   useEffect(() => {
     switch (type) {
-      case "create":
-        setColor("blue");
-        setText("Creating...");
-        break;
-
       case "join":
         setColor("green");
         setText("Joining...");
@@ -49,29 +44,13 @@ const Modal = ({ toggle, type, cancle, isCancle }) => {
             type !== "all" ? "bg-texture" : ""
           }`}
         >
-          {type !== "all" && type !== "wait" && (
+          {type !== "all" && (
             <>
               <div className="spin mr-2 flex items-center">
                 <ion-icon name="reload-circle"></ion-icon>
               </div>
               <div>{text}</div>
             </>
-          )}
-          {type === "wait" && (
-            <div className="flex flex-col items-center justify-center text-center">
-              <div className="flex items-center">
-                <div className="spin mr-2 flex items-center">
-                  <ion-icon name="reload-circle"></ion-icon>
-                </div>
-                <div>{isCancle ? "Cancling request..." : text}</div>
-              </div>
-              <div
-                onClick={cancle}
-                className="mt-4 cursor-pointer rounded-lg bg-orange-400 px-8 py-4 text-white hover:bg-orange-500"
-              >
-                Cancle
-              </div>
-            </div>
           )}
         </div>
       )}

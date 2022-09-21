@@ -88,7 +88,7 @@ export const removePendingRoom = createAsyncThunk("users/removePendingRoom", asy
   }
 });
 
-export const deleteById = createAsyncThunk("users/removePendingRoom", async ({ userId }) => {
+export const deleteById = createAsyncThunk("users/deleteById", async ({ userId }) => {
   try {
     const { data } = await axios.delete(userRoutes.deleteById(userId));
     return data;

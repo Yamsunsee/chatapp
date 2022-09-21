@@ -3,25 +3,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-
 import { signIn } from "../redux/APIs/userAPIs";
-import { currentUser, enterStatus } from "../redux/selectors";
-
-import signInImage from "../assets/images/signin.png";
+import { enterStatusSelector, userSelector } from "../redux/selectors";
+import { changeUser } from "../redux/slices/lobbySlice";
+import signInImage from "../assets/signin.png";
 import Logo from "../components/Utilities/Logo";
-import { changeUser } from "../redux/lobbySlice";
 
 const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const signedInUser = useSelector(currentUser);
-  const { signIn: signInStatus } = useSelector(enterStatus);
-
+  const signedInUser = useSelector(userSelector);
+  const { signIn: signInStatus } = useSelector(enterStatusSelector);
   const [isShowPassword, setIsShowPassword] = useState(false);
 
   useEffect(() => {
-    signedInUser.name && navigate("/yamess");
+    signedInUser.nickname && navigate("/yamess");
   }, []);
 
   const handleSubmit = async (event) => {
@@ -31,18 +27,27 @@ const Signin = () => {
 
     const pattern = /\W/g;
     if (user.name.length < 3 || pattern.test(user.name))
-      return toast.error("Username must be at least 3 characters long and contain only a-z, A-Z, 0-9 or _ characters!");
+      return toast.warning(
+        "Username must be at least 3 characters long and contain only a-z, A-Z, 0-9 or _ characters!"
+      );
 
     if (user.password.length < 6 || pattern.test(user.password))
-      return toast.error("Password must be at least 6 characters long and contain only a-z, A-Z, 0-9 or _ characters!");
+      return toast.warning(
+        "Password must be at least 6 characters long and contain only a-z, A-Z, 0-9 or _ characters!"
+      );
 
     const result = await dispatch(signIn({ user }));
-    const { isSuccess, message, data } = unwrapResult(result);
-    if (isSuccess) {
-      dispatch(changeUser(data));
-      navigate("/yamess");
-    } else {
-      toast.error(message);
+    try {
+      const { isSuccess, message, data } = unwrapResult(result);
+      if (isSuccess) {
+        dispatch(changeUser(data));
+        localStorage.setItem("yamess-data", true);
+        navigate("/yamess");
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error("The server is busy now! Please try again in a few minutes!");
     }
   };
 

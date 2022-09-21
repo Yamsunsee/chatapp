@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { deleteById, getById } from "../APIs/roomAPIs";
 
 const chatroomSlice = createSlice({
   name: "chatroom",
@@ -6,17 +7,35 @@ const chatroomSlice = createSlice({
     isLoading: {
       leaveRoom: false,
       deleteRoom: false,
+      getRoom: false,
       getRequests: false,
-      getMembers: false,
       getMessages: false,
     },
     room: {},
-    requests: [],
-    members: [],
     messages: [],
   },
-  reducers: {},
+  reducers: {
+    changeRoom: (state, action) => {
+      state.room = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getById.pending, (state) => {
+        state.isLoading.getRoom = true;
+      })
+      .addCase(getById.fulfilled, (state, action) => {
+        state.isLoading.getRoom = false;
+        state.room = action.payload.data;
+      })
+      .addCase(deleteById.pending, (state) => {
+        state.isLoading.deleteRoom = true;
+      })
+      .addCase(deleteById.fulfilled, (state) => {
+        state.isLoading.deleteRoom = false;
+      });
+  },
 });
 
-// export const {} = chatroomSlice.actions;
+export const { changeRoom } = chatroomSlice.actions;
 export default chatroomSlice.reducer;

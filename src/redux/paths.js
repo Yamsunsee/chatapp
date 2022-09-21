@@ -19,7 +19,6 @@ const rooms = `${host}/rooms`;
 export const roomRoutes = {
   getAll: () => rooms,
   getById: (roomId) => `${rooms}/${roomId}`,
-  getJoinedMembers: (roomId) => `${rooms}/${roomId}/joined`,
   getPendingMembers: (roomId) => `${rooms}/${roomId}/pending`,
   create: () => `${rooms}/create`,
   changeName: (roomId) => `${rooms}/${roomId}/name`,

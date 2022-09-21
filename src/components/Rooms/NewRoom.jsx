@@ -1,28 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-
+import { changeRoom } from "../../redux/slices/chatroomSlice";
+import { socketSelector, userSelector, lobbyStatusSelector } from "../../redux/selectors";
 import { create } from "../../redux/APIs/roomAPIs";
-import { currentSocket, currentUser, lobbyStatus } from "../../redux/selectors";
-
-import roomImage from "../../assets/images/room.png";
+import roomImage from "../../assets/room.png";
 
 const NewRoom = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const socket = useSelector(currentSocket);
-  const { _id: userId } = useSelector(currentUser);
-  const { createRoom: createRoomStatus } = useSelector(lobbyStatus);
+  const socket = useSelector(socketSelector);
+  const { _id: userId } = useSelector(userSelector);
+  const { createRoom: createRoomStatus } = useSelector(lobbyStatusSelector);
   const [name, setName] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [isValidName, setIsValidName] = useState(false);
   const [limit, setLimit] = useState(2);
 
-  useEffect(() => {
-    setIsValidName(name.trim().length > 0);
-  }, [name]);
+  const isValidName = useMemo(() => name.trim().length > 0, [name]);
 
   const handleCreate = async () => {
     const result = await dispatch(
@@ -35,8 +31,9 @@ const NewRoom = () => {
         },
       })
     );
-    const { isSuccess, message } = unwrapResult(result);
+    const { isSuccess, message, data } = unwrapResult(result);
     if (isSuccess) {
+      dispatch(changeRoom(data));
       navigate("/yamess/chatroom");
       socket.emit("create-room");
     } else {
