@@ -6,7 +6,13 @@ import Invitation from "../Invitation/schema.js";
 export const getAll = async (req, res) => {
   try {
     const rooms = await Room.find();
-    return res.status(200).json({ isSuccess: true, message: "Successfully!", data: rooms });
+    const newRooms = await Promise.all(
+      rooms.map(async (room) => {
+        const joinedMembers = await User.find({ currentRoomId: room._id }, "nickname");
+        return { ...room._doc, joinedMembers };
+      })
+    );
+    return res.status(200).json({ isSuccess: true, message: "Successfully!", data: newRooms });
   } catch (error) {
     return res.status(400).json({ isSuccess: false, message: error.message });
   }
@@ -15,8 +21,12 @@ export const getAll = async (req, res) => {
 export const getById = async (req, res) => {
   try {
     const { roomId } = req.params;
-    const rooms = await Room.find({ _id: roomId });
-    return res.status(200).json({ isSuccess: true, message: "Successfully!", data: rooms });
+    const room = await Room.findOne({ _id: roomId });
+    const joinedMembers = await User.find({ currentRoomId: roomId }, "nickname");
+    const pendingMembers = await User.find({ pendingRoomId: roomId }, "nickname");
+    return res
+      .status(200)
+      .json({ isSuccess: true, message: "Successfully!", data: { ...room._doc, joinedMembers, pendingMembers } });
   } catch (error) {
     return res.status(400).json({ isSuccess: false, message: error.message });
   }
@@ -31,7 +41,6 @@ export const getJoinedMembers = async (req, res) => {
     return res.status(400).json({ isSuccess: false, message: error.message });
   }
 };
-
 export const getPendingMembers = async (req, res) => {
   try {
     const { roomId } = req.params;
@@ -52,7 +61,13 @@ export const create = async (req, res) => {
       hostId: userId,
     });
     await newRoom.save();
-    return res.status(200).json({ isSuccess: true, message: "Successfully!", data: newRoom });
+    const { nickname } = await User.findOneAndUpdate({ _id: userId }, { currentRoomId: newRoom._id }, { new: true });
+    const pendingMembers = await User.find({ pendingRoomId: newRoom._id }, "nickname");
+    return res.status(200).json({
+      isSuccess: true,
+      message: "Successfully!",
+      data: { ...newRoom._doc, joinedMembers: [{ _id: userId, nickname }], pendingMembers },
+    });
   } catch (error) {
     return res.status(400).json({ isSuccess: false, message: error.message });
   }

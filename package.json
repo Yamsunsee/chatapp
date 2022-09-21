@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon index.js"
   },
@@ -23,3 +24,4 @@
     "nodemon": "^2.0.19"
   }
 }
+
