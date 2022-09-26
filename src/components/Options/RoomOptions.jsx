@@ -3,6 +3,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { removeCurrentRoom } from "../../redux/APIs/userAPIs";
 import { changeRoom } from "../../redux/slices/chatroomSlice";
 import { chatroomStatusSelector, roomSelector, socketSelector, userSelector } from "../../redux/selectors";
 import Id from "../Utilities/Id";
@@ -51,7 +52,17 @@ const RoomOptions = () => {
     const { isSuccess, message } = unwrapResult(result);
     if (isSuccess) {
       dispatch(changeRoom({}));
-      socket.emit("delete-room", roomId);
+      navigate("/yamess");
+    } else {
+      toast.error(message);
+    }
+  };
+
+  const handleLeave = async () => {
+    const result = await dispatch(removeCurrentRoom({ userId, roomId }));
+    const { isSuccess, message } = unwrapResult(result);
+    if (isSuccess) {
+      dispatch(changeRoom({}));
       navigate("/yamess");
     } else {
       toast.error(message);
@@ -81,9 +92,6 @@ const RoomOptions = () => {
             <Id data={roomId} title="Room ID" />
           </div>
           <div className="flex items-end justify-between border-b-2 border-slate-100 px-4 pb-4 text-sm italic">
-            <div>
-              {userId === hostId ? "You" : host.nickname} <span className="text-slate-300">[Host]</span>
-            </div>
             <div>
               {isPrivate ? "Private" : "Public"} <span className="text-slate-300">[Type]</span>
             </div>
@@ -141,7 +149,7 @@ const RoomOptions = () => {
             </div>
           ) : (
             <div
-              onClick={() => console.log("Leave")}
+              onClick={handleLeave}
               className="flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-orange-400 hover:bg-orange-50"
             >
               Leave Room

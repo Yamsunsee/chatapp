@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import { changeRoom } from "../redux/slices/chatroomSlice";
 import { chatroomStatusSelector, roomSelector, socketSelector, userSelector } from "../redux/selectors";
+import { getById } from "../redux/APIs/roomAPIs";
 import Logo from "../components/Utilities/Logo";
 import RoomOptions from "../components/Options/RoomOptions";
 import Messages from "../components/Messages";
@@ -18,11 +20,16 @@ const Chatroom = () => {
   const { _id: roomId, name, hostId } = useSelector(roomSelector);
 
   useEffect(() => {
-    socket.on("delete-room", (deletedRoomId) => {
-      roomId === deletedRoomId && navigate("/yamess");
-      toast.warning("Your current room has been deleted!");
-    });
-  }, [socket]);
+    roomId && fetchRoom();
+  }, [roomId]);
+
+  const fetchRoom = async () => {
+    const result = await dispatch(getById({ roomId }));
+    const { isSuccess, message } = unwrapResult(result);
+    if (!isSuccess) {
+      toast.error(message);
+    }
+  };
 
   return (
     <div className="flex h-screen w-full">

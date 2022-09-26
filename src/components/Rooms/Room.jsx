@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import { changeRoom } from "../../redux/slices/chatroomSlice";
 import { socketSelector, userSelector } from "../../redux/selectors";
 import Id from "../Utilities/Id";
 import roomImage from "../../assets/room.png";
+import { addCurrentRoom } from "../../redux/APIs/userAPIs";
 
 const Room = ({ room }) => {
   const flag = true;
@@ -13,6 +15,21 @@ const Room = ({ room }) => {
   const dispatch = useDispatch();
   const socket = useSelector(socketSelector);
   const { _id: userId } = useSelector(userSelector);
+
+  const handleJoinPublicRoom = async () => {
+    const result = await dispatch(addCurrentRoom({ userId, roomId: room._id }));
+    const { isSuccess, message } = unwrapResult(result);
+    if (isSuccess) {
+      dispatch(changeRoom({ _id: room._id }));
+      navigate("/yamess/chatroom");
+    } else {
+      toast.error(message);
+    }
+  };
+
+  const handleJoinPrivateRoom = async () => {
+    console.log("Send request to join chatroom");
+  };
 
   return (
     <div className="flex flex-col rounded-lg bg-white p-8 shadow-lg">
@@ -54,14 +71,14 @@ const Room = ({ room }) => {
         </div>
       ) : room.isPrivate === true ? (
         <div
-          onClick={() => console.log("Oke")}
+          onClick={handleJoinPrivateRoom}
           className="mt-8 w-full cursor-pointer rounded-lg bg-orange-400 px-8 py-4 text-center text-xl font-bold uppercase text-white hover:bg-orange-500"
         >
           {flag ? "Pending request" : "Ask to join room"}
         </div>
       ) : (
         <div
-          onClick={() => console.log("Oke")}
+          onClick={handleJoinPublicRoom}
           className="mt-8 w-full cursor-pointer rounded-lg bg-green-400 px-8 py-4 text-center text-xl font-bold uppercase text-white hover:bg-green-500"
         >
           Join room

@@ -27,23 +27,6 @@ const Lobby = () => {
   const { name: roomName } = useSelector(roomSelector);
   const [isNewRoom, setIsNewRoom] = useState(false);
 
-  useEffect(() => {
-    if (roomName) {
-      navigate("/yamess/chatroom");
-    } else if (nickname) {
-      socket.emit("join", userId);
-    } else {
-      const storageData = JSON.parse(localStorage.getItem("yamess-data"));
-      navigate(`/yamess/sign${storageData ? "in" : "up"}`);
-    }
-  }, []);
-
-  useEffect(() => {
-    socket.on("users", (users) => {
-      fetchOnlineMembers(users);
-    });
-  }, [socket]);
-
   const fetchOnlineMembers = async (userIdList) => {
     const result = await dispatch(getManyById({ userIdList }));
     const { isSuccess, message } = unwrapResult(result);

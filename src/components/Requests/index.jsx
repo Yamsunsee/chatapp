@@ -1,18 +1,26 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-
 import { getByUserId } from "../../redux/APIs/invitationAPIs";
-
+import { getPendingMembers } from "../../redux/APIs/roomAPIs";
 import { roomSelector, userSelector } from "../../redux/selectors.js";
-
 import Request from "./Request.jsx";
 
 const Requests = () => {
   const dispatch = useDispatch();
+  const { _id: roomId, pendingMembers: requests } = useSelector(roomSelector);
 
-  const { _id: userId } = useSelector(userSelector);
-  const { pendingMembers: requests } = useSelector(roomSelector);
+  useEffect(() => {
+    roomId && fecthRequests();
+  }, [roomId]);
+
+  const fecthRequests = async () => {
+    const result = await dispatch(getPendingMembers({ roomId }));
+    const { isSuccess, message } = unwrapResult(result);
+    if (!isSuccess) {
+      toast.error(message);
+    }
+  };
 
   return (
     <div className={`group relative text-slate-500 ${requests.length ? "new" : ""}`}>

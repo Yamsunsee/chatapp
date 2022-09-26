@@ -29,7 +29,7 @@ export const remainingRoomsSelector = createSelector(roomsSelector, filtersSelec
 
 //@ Chatroom route
 export const chatroomStatusSelector = (state) => state.chatroom.isLoading;
-export const joinedMembersSelector = (state) => state.chatroom.room.joinedMembers;
+export const joinedMembersSelector = (state) => state.chatroom.room.joinedMembers || [];
 export const messagesSeletor = (state) => state.chatroom.messages;
 export const roomSelector = (state) => state.chatroom.room;
 export const idleMembersSelector = createSelector(

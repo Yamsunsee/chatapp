@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteById, getById } from "../APIs/roomAPIs";
+import { deleteById, getById, getPendingMembers } from "../APIs/roomAPIs";
 
 const chatroomSlice = createSlice({
   name: "chatroom",
@@ -27,6 +27,13 @@ const chatroomSlice = createSlice({
       .addCase(getById.fulfilled, (state, action) => {
         state.isLoading.getRoom = false;
         state.room = action.payload.data;
+      })
+      .addCase(getPendingMembers.pending, (state) => {
+        state.isLoading.getRequests = true;
+      })
+      .addCase(getPendingMembers.fulfilled, (state, action) => {
+        state.isLoading.getRequests = false;
+        state.room.pendingMembers = action.payload.data;
       })
       .addCase(deleteById.pending, (state) => {
         state.isLoading.deleteRoom = true;

@@ -16,15 +16,6 @@ const Rooms = ({ isNewRoom }) => {
     fetchRooms();
   }, []);
 
-  useEffect(() => {
-    socket.on("rooms", () => {
-      fetchRooms();
-    });
-    socket.on("delete-room", () => {
-      fetchRooms();
-    });
-  }, [socket]);
-
   const fetchRooms = async () => {
     const result = await dispatch(getAll());
     const { isSuccess, message } = unwrapResult(result);

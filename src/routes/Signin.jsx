@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { signIn } from "../redux/APIs/userAPIs";
-import { enterStatusSelector, userSelector } from "../redux/selectors";
+import { enterStatusSelector, socketSelector, userSelector } from "../redux/selectors";
 import { changeUser } from "../redux/slices/lobbySlice";
 import signInImage from "../assets/signin.png";
 import Logo from "../components/Utilities/Logo";
@@ -12,6 +12,7 @@ import Logo from "../components/Utilities/Logo";
 const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const socket = useSelector(socketSelector);
   const signedInUser = useSelector(userSelector);
   const { signIn: signInStatus } = useSelector(enterStatusSelector);
   const [isShowPassword, setIsShowPassword] = useState(false);

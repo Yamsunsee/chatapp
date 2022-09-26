@@ -35,7 +35,6 @@ const NewRoom = () => {
     if (isSuccess) {
       dispatch(changeRoom(data));
       navigate("/yamess/chatroom");
-      socket.emit("create-room");
     } else {
       toast.error(message);
     }
