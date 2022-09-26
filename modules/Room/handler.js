@@ -61,12 +61,11 @@ export const create = async (req, res) => {
       hostId: userId,
     });
     await newRoom.save();
-    const { nickname } = await User.findOneAndUpdate({ _id: userId }, { currentRoomId: newRoom._id }, { new: true });
-    const pendingMembers = await User.find({ pendingRoomId: newRoom._id }, "nickname");
+    await User.findOneAndUpdate({ _id: userId }, { currentRoomId: newRoom._id }, { new: true });
     return res.status(200).json({
       isSuccess: true,
       message: "Successfully!",
-      data: { ...newRoom._doc, joinedMembers: [{ _id: userId, nickname }], pendingMembers },
+      data: { _id: newRoom._id },
     });
   } catch (error) {
     return res.status(400).json({ isSuccess: false, message: error.message });
@@ -120,7 +119,8 @@ export const changeHost = async (req, res) => {
 export const deleteById = async (req, res) => {
   try {
     const { roomId } = req.params;
-    await Room.findOneAndDelete({ _id: roomId });
+    await User.updateMany({ currentRoomId: roomId }, { $set: { currentRoomId: null } });
+    await Room.deleteOne({ _id: roomId });
     await Message.deleteMany({ roomId });
     await Invitation.deleteMany({ roomId });
     return res.status(200).json({ isSuccess: true, message: "Deleted!" });

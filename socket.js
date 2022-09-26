@@ -24,11 +24,7 @@ export default (io) => {
       io.emit("users", users);
     });
 
-    socket.on("create-room", () => {
-      socket.broadcast.emit("rooms");
-    });
-
-    socket.on("leave-room", () => {
+    socket.on("rooms", () => {
       socket.broadcast.emit("rooms");
     });
 
